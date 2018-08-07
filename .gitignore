@@ -3,3 +3,4 @@ tmp/
 dist/
 vendor/
 .envrc
+tfschema

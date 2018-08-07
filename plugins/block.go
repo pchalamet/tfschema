@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"sort"
 	"strconv"
 
 	"github.com/hashicorp/terraform/config/configschema"
@@ -16,9 +15,9 @@ import (
 // Most of the structure is the smae as the core, but some are different.
 type Block struct {
 	// Attributes is a map of any attributes.
-	Attributes map[string]*Attribute `json:"attributes"`
+	Attributes []*Attribute `json:"attributes"`
 	// BlockTypes is a map of any nested block types.
-	BlockTypes map[string]*NestedBlock `json:"block_types"`
+	BlockTypes []*NestedBlock `json:"block_types"`
 }
 
 // NewBlock creates a new Block instance.
@@ -30,22 +29,25 @@ func NewBlock(b *configschema.Block) *Block {
 }
 
 // NewAttributes creates a new map of Attributes.
-func NewAttributes(as map[string]*configschema.Attribute) map[string]*Attribute {
-	m := make(map[string]*Attribute)
+func NewAttributes(as map[string]*configschema.Attribute) []*Attribute {
+	m := make([]*Attribute, len(as))
 
+	i := 0
 	for k, v := range as {
-		m[k] = NewAttribute(v)
+		m[i] = NewAttribute(v, k)
+		i++
 	}
 
 	return m
 }
 
 // NewBlockTypes creates a new map of NestedBlocks.
-func NewBlockTypes(bs map[string]*configschema.NestedBlock) map[string]*NestedBlock {
-	m := make(map[string]*NestedBlock)
+func NewBlockTypes(bs map[string]*configschema.NestedBlock) []*NestedBlock {
+	m := make([]*NestedBlock, len(bs))
 
+	i := 0
 	for k, v := range bs {
-		m[k] = NewNestedBlock(v)
+		m[i] = NewNestedBlock(v, k)
 	}
 
 	return m
@@ -92,22 +94,14 @@ func (b *Block) renderAttributes() (string, error) {
 
 	table.SetHeader([]string{"attribute", "type", "required", "optional", "computed", "sensitive"})
 
-	// sort map keys
-	keys := []string{}
-	for k := range b.Attributes {
-		keys = append(keys, k)
-	}
-	sort.Strings(keys)
-
-	for _, k := range keys {
-		v := b.Attributes[k]
+	for _, v := range b.Attributes {
 		typeName, err := v.Type.Name()
 		if err != nil {
 			return "", err
 		}
 
 		row := []string{
-			k,
+			v.Name,
 			typeName,
 			strconv.FormatBool(v.Required),
 			strconv.FormatBool(v.Optional),
@@ -130,16 +124,8 @@ func (b *Block) renderBlockTypes() (string, error) {
 
 	buf := new(bytes.Buffer)
 
-	// sort map keys
-	keys := []string{}
-	for k := range b.BlockTypes {
-		keys = append(keys, k)
-	}
-	sort.Strings(keys)
-
-	for _, k := range keys {
-		v := b.BlockTypes[k]
-		blockType := fmt.Sprintf("\nblock_type: %s, nesting: %s, min_items: %d, max_items: %d\n", k, v.Nesting, v.MinItems, v.MaxItems)
+	for _, v := range b.BlockTypes {
+		blockType := fmt.Sprintf("\nblock_type: %s, nesting: %s, min_items: %d, max_items: %d\n", v.Name, v.Nesting, v.MinItems, v.MaxItems)
 		buf.WriteString(blockType)
 
 		block, err := v.renderBlock()

@@ -6,6 +6,7 @@ import (
 
 // Attribute is wrapper for configschema.Attribute.
 type Attribute struct {
+	Name string `json:"name"`
 	// Type is a type of the attribute's value.
 	// Note that Type is not cty.Type
 	// We cannot import github.com/hashicorp/terraform/vendor/github.com/zclconf/go-cty/cty
@@ -27,8 +28,9 @@ type Attribute struct {
 }
 
 // NewAttribute creates a new Attribute instance.
-func NewAttribute(a *configschema.Attribute) *Attribute {
+func NewAttribute(a *configschema.Attribute, name string) *Attribute {
 	return &Attribute{
+		Name:      name,
 		Type:      *NewType(a.Type),
 		Required:  a.Required,
 		Optional:  a.Optional,
