@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/minamijoyo/tfschema/tfschema"
+	"tfschema/plugins"
 )
 
 // ProviderShowCommand is a command which shows a type definition of provider.

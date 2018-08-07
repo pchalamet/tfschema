@@ -3,7 +3,7 @@ package command
 import (
 	"strings"
 
-	"github.com/minamijoyo/tfschema/tfschema"
+	"tfschema/plugins"
 )
 
 // ResourceListCommand is a command which lists resource types.

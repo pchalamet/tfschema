@@ -3,7 +3,7 @@ package command
 import (
 	"strings"
 
-	"github.com/minamijoyo/tfschema/tfschema"
+	"tfschema/plugins"
 )
 
 // DataListCommand is a command which lists data sources.

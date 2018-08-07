@@ -8,9 +8,9 @@ import (
 	"os"
 	"sync"
 	"syscall"
+	"tfschema/command"
 
 	"github.com/hashicorp/logutils"
-	"github.com/minamijoyo/tfschema/command"
 	"github.com/mitchellh/cli"
 	"github.com/mitchellh/panicwrap"
 )

@@ -5,7 +5,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/minamijoyo/tfschema/tfschema"
+	"tfschema/plugins"
+
 	"github.com/posener/complete"
 )
 
