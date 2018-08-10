@@ -30,12 +30,11 @@ func NewBlock(b *configschema.Block) *Block {
 
 // NewAttributes creates a new map of Attributes.
 func NewAttributes(as map[string]*configschema.Attribute) []*Attribute {
-	m := make([]*Attribute, len(as))
+	m := make([]*Attribute, 0)
 
-	i := 0
 	for k, v := range as {
-		m[i] = NewAttribute(v, k)
-		i++
+		attr := NewAttribute(v, k)
+		m = append(m, attr)
 	}
 
 	return m
@@ -43,11 +42,11 @@ func NewAttributes(as map[string]*configschema.Attribute) []*Attribute {
 
 // NewBlockTypes creates a new map of NestedBlocks.
 func NewBlockTypes(bs map[string]*configschema.NestedBlock) []*NestedBlock {
-	m := make([]*NestedBlock, len(bs))
+	m := make([]*NestedBlock, 0)
 
-	i := 0
 	for k, v := range bs {
-		m[i] = NewNestedBlock(v, k)
+		nestedBlock := NewNestedBlock(v, k)
+		m = append(m, nestedBlock)
 	}
 
 	return m
